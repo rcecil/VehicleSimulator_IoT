@@ -26,7 +26,11 @@ package com.ibm.ts.demo;
 
 import java.util.Random;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 public class Driver implements Runnable{
+	JsonObject json = new JsonObject();
 	int id ;
 	int vehicle_id ;
 	RoadMap rm ;
@@ -62,8 +66,9 @@ public class Driver implements Runnable{
 			} else {
 				velocity = rand.nextInt((int)speed_limit) ;
 			}
-			java.time.LocalDateTime now = java.time.LocalDateTime.now();
-			String message = " { \"d\" : { \"DriverId\" : " + id +
+			
+	DData data = new DData(new Payload(id,x_a + i * x_step,y_a + i * y_step,speed_limit,velocity)) ;			
+			/*String message = " { \"d\" : { \"DriverId\" : " + id +
 					" , \"Latitude\" : " +
 					Double.toString(x_a + i * x_step) + 
 					" , \"Longitude\" :  " + Double.toString(y_a + i * y_step)
@@ -75,8 +80,8 @@ public class Driver implements Runnable{
 					" , \"Hour\" :  " + now.getHour() +
 					" , \"Minute\" :  " + now.getMinute() +
 					" , \"Second\" :  " + now.getSecond() +
-					"} }";
-			p.publish(message);
+					"} }"; */
+			p.publish(new Gson().toJson(data).toString());
 			try {
 				Thread.sleep(15000);
 			} catch (InterruptedException e) {

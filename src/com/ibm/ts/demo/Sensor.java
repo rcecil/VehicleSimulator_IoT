@@ -82,7 +82,7 @@ public class Sensor implements Publisher {
 	}
 	
 	public void publish(String content) {
-		String topic        = "iot-2/evt/1/fmt/JSON";
+		String topic        = "iot-2/evt/pos/fmt/JSON";
         int qos             = 2;
         
         try {
