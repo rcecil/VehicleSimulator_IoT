@@ -32,18 +32,28 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class Sensor implements Publisher {
-	String broker       = "tcp://s9gqp3.messaging.internetofthings.ibmcloud.com:1883";
-	String clientId     = "d:s9gqp3:VehicleSimulator-1:v";
+	String orgId        =  null ;
+	String broker       =  null ;
+	String clientId     =  null ;
     String userid       = "use-token-auth" ;
-    String password     = "12345678" ;
+    String password     =  null ;
     MemoryPersistence persistence = new MemoryPersistence();
     MqttClient mqttClient = null;
+	private String deviceClassName;
+	private String devicePrefix;
     
-	public Sensor(int id) {
-		clientId = clientId + Integer.toString(id);
+	public Sensor(int id,String orgId,String deviceClassName , String devicePrefix,String token) {
+		//this.clientId = clientId + Integer.toString(id);
+		this.orgId = orgId ;
+		this.deviceClassName = deviceClassName ;
+		this.devicePrefix  = devicePrefix ;
+		this.password = token ;
+		this.broker = "tcp://" + this.orgId + ".messaging.internetofthings.ibmcloud.com:1883" ;
+		this.clientId = "d:" + this.orgId + ":" + this.deviceClassName + ":" + this.devicePrefix + Integer.toString(id);
+		
 		try {
-			mqttClient =  new MqttClient(broker, clientId, persistence);
-			System.out.println(" I am here connecting" );
+			mqttClient =  new MqttClient(broker, this.clientId, persistence);
+			System.out.println( this.clientId );
 		} catch (MqttException e) {
 			 System.out.println("reason "+e.getReasonCode());
 	         System.out.println("msg "+e.getMessage());
@@ -106,4 +116,3 @@ public class Sensor implements Publisher {
 		}
 	}
 }
-
