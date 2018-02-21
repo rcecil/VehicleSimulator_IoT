@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="jar" name="vsim">
+  <property environment="env"/>
+  <property name="debuglevel" value="source,lines,vars"/>
+  <property name="target" value="1.8"/>
+  <property name="source" value="1.8"/>
+  <property name="jar.name" value="vsim.jar" /> 
+  <property name="dist.home" value="dist" />
+  <property name="build.home" value="bin" />
+  <property name="lib.home" value="lib" />
+  <path id="vsim.classpath">
+    <pathelement location="bin"/>
+    <pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.0.jar"/>
+  </path>
+  <target name="init">
+    <mkdir dir="bin"/>
+    <mkdir dir="dist"/>
+    <mkdir dir="dist/lib"/>
+    <mkdir dir="build"/>
+    <copy includeemptydirs="false" todir="bin">
+      <fileset dir="src" excludes="**/*.launch, **/*.java"/>
+    </copy>
+    <copy includeemptydirs="false" todir="bin">
+      <fileset dir="lib" excludes="**/*.launch, **/*.java"/>
+    </copy>
+  </target>
+  <target name="clean">
+    <delete dir="bin"/>
+    <delete dir="dist"/>
+    <delete dir="build"/>
+  </target>
+  <target depends="clean" name="cleanall"/>
+  <target depends="build-subprojects,build-project" name="build"/>
+  <target name="build-subprojects"/>
+  <target depends="init" name="build-project">
+    <echo message="${ant.project.name}: ${ant.file}"/>
+    <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+      <src path="src"/>
+      <classpath refid="vsim.classpath"/>
+    </javac>
+  </target>
+  <target name="jar" depends="build-project" description="Create jar and MANIFEST.MF">
+    <pathconvert property="libs.project" pathsep=" ">  
+      <mapper>  
+        <chainedmapper>  
+          
+          <!-- remove absolute path -->  
+          <flattenmapper />  
+          
+          <!-- add lib/ prefix -->  
+          <globmapper from="*" to="lib/*" />  
+        </chainedmapper>  
+      </mapper>  
+      
+      <path>
+        <fileset dir="${lib.home}">  
+          <include name="**/*.jar" />  
+        </fileset>  
+      </path>  
+    </pathconvert> 
+    <jar jarfile="dist/vsim.jar" basedir="${build.home}">
+      <fileset dir="bin" />
+      <manifest>
+        <attribute name="Main-Class" value="com.ibm.ts.demo.Main" />
+        <attribute name="Class-Path" value="${libs.project} lib/org.eclipse.paho.client.mqttv3-1.2.0.jar" />
+      </manifest>
+    </jar>
+    <copy includeemptydirs="false" todir="dist/lib">
+      <fileset dir="lib" excludes="**/*.launch, **/*.java"/>
+    </copy>
+  </target>
+  <target name="jsdtw">
+    <java classname="com.ibm.ts.demo.Main" failonerror="true" fork="yes">
+      <classpath refid="jsdtw.classpath"/>
+    </java>
+  </target>
+</project>
