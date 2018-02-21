@@ -11,6 +11,7 @@
   <path id="vsim.classpath">
     <pathelement location="bin"/>
     <pathelement location="lib/org.eclipse.paho.client.mqttv3-1.2.0.jar"/>
+<pathelement location="lib/gson-2.3.1.jar"/>
   </path>
   <target name="init">
     <mkdir dir="bin"/>
@@ -62,16 +63,16 @@
       <fileset dir="bin" />
       <manifest>
         <attribute name="Main-Class" value="com.ibm.ts.demo.Main" />
-        <attribute name="Class-Path" value="${libs.project} lib/org.eclipse.paho.client.mqttv3-1.2.0.jar" />
+        <attribute name="Class-Path" value="${libs.project} lib/org.eclipse.paho.client.mqttv3-1.2.0.jar lib/gson-2.3.1.jar" />
       </manifest>
     </jar>
     <copy includeemptydirs="false" todir="dist/lib">
       <fileset dir="lib" excludes="**/*.launch, **/*.java"/>
     </copy>
   </target>
-  <target name="jsdtw">
+  <target name="vsim">
     <java classname="com.ibm.ts.demo.Main" failonerror="true" fork="yes">
-      <classpath refid="jsdtw.classpath"/>
+      <classpath refid="vsim.classpath"/>
     </java>
   </target>
 </project>
